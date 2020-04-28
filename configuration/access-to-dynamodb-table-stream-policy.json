@@ -10,7 +10,7 @@
             ],
             "Effect": "Allow",
             "Resource": [
-                "arn:aws:dynamodb:us-east-1:XXXXXXXXXXXX:table/TABLENAME/stream/2017-09-14T14:16:12.788"
+                "arn:aws:dynamodb:us-east-1:XXXXXXXXXXXX:table/TABLENAME/stream/2020-24-14T14:16:12.788"
             ]
         }
     ]
