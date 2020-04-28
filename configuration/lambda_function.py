@@ -23,7 +23,7 @@ ES_ENDPOINT = 'search-students-cuqolvi4pazv2l33qlhlpr4ofq.us-east-1.es.amazonaws
 DOC_TABLE_FORMAT = '{}'         # Python formatter to generate index name from the DynamoDB table name
 DOC_TYPE_FORMAT = '{}_type'     # Python formatter to generate type name from the DynamoDB table name, default is to add '_type' suffix
 ES_REGION = None                # If not set, use the runtime lambda region
-ES_MAX_RETRIES = 3              # Max number of retries for exponential backoff
+ES_MAX_RETRIES = 3              # Max number of retries
 DEBUG = True                    # Set verbose debugging information
 
 print "Streaming to ElasticSearch"
@@ -89,20 +89,17 @@ def post_to_es(payload):
 
            if es_ret['errors']:
                logger.error('ES post unsuccessful, errors present, took=%sms', es_ret['took'])
-               # Filter errors
                es_errors = [item for item in es_ret['items'] if item.get('index').get('error')]
                logger.error('List of items with errors: %s', json.dumps(es_errors))
            else:
                logger.info('ES post successful, took=%sms', es_ret['took'])
-           break  # Sending to ES was ok, break retry loop
+           break
        except ES_Exception as e:
            if (e.status_code >= 500) and (e.status_code <= 599):
-               retries += 1  # Candidate for retry
+               retries += 1
            else:
-               raise  # Stop retrying, re-raise exception
+               raise
 
-
-# Extracts the DynamoDB table from an ARN
 def get_table_name_from_arn(arn):
    return arn.split(':')[5].split('/')[1]
 
@@ -121,7 +118,6 @@ def _lambda_handler(event, context):
    es_actions = []  # Items to be added/updated/removed from ES - for bulk API
    cnt_insert = cnt_modify = cnt_remove = 0
    for record in records:
-       # Handle both native DynamoDB Streams or Streams data from Kinesis (for manual replay)
        if record.get('eventSource') == 'aws:dynamodb':
            ddb = record['dynamodb']
            ddb_table_name = get_table_name_from_arn(record['eventSourceARN'])
@@ -153,13 +149,12 @@ def _lambda_handler(event, context):
            if 'NewImage' not in ddb:
                logger.warning('Cannot process stream if it does not contain NewImage')
                continue
+
            # Deserialize DynamoDB type to Python types
            doc_fields = ddb_deserializer.deserialize({'M': ddb['NewImage']})
-           # Add metadata
            doc_fields['@timestamp'] = now.isoformat()
            doc_fields['@SequenceNumber'] = doc_seq
 
-           # Generate JSON payload
            doc_json = json.dumps(doc_fields)
 
            # Generate ES payload for item
@@ -178,8 +173,6 @@ def _lambda_handler(event, context):
 
    post_to_es(es_payload)
 
-
-# Global lambda handler - catches all exceptions to avoid dead letter in the DynamoDB Stream
 def lambda_handler(event, context):
    try:
        return _lambda_handler(event, context)
