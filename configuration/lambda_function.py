@@ -15,7 +15,6 @@ from botocore.endpoint import BotocoreHTTPSession
 from botocore.session import Session
 from boto3.dynamodb.types import TypeDeserializer
 
-
 # The following parameters are required to configure the ES cluster
 ES_ENDPOINT = 'search-students-cuqolvi4pazv2l33qlhlpr4ofq.us-east-1.es.amazonaws.com'
 
