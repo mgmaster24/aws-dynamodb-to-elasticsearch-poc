@@ -1,0 +1,1 @@
+# aws-dynamodb-to-elasticsearch-poc
