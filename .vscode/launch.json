@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: post_to_est_from_dynamodb.py",
+            "type": "python",
+            "request": "launch",
+            "program": "/home/mgmaster/projects/AWS-DynamoDB-ElasticSearch-POC/post_to_est_from_dynamodb.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--rn", "us-east-1",
+                "--tn", "lo_students",
+                "--ak", "",
+                "--sk", "",
+                "--esarn", "arn:aws:dynamodb:us-east-1:948813453292:table/lo_students/stream/2020-04-25T02:22:41.691",
+                "--lf", "arn:aws:lambda:us-east-1:948813453292:function:dynamodb-lo_students-stream-to-es-students"
+            ]
+        },
+        {
+            "name": "Python: test.py",
+            "type": "python",
+            "request": "launch",
+            "program": "/home/mgmaster/projects/AWS-DynamoDB-ElasticSearch-POC/test.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--rn", "us-east-1",
+                "--ak", "",
+                "--sk", ""
+            ]
+        }
+    ]
+}
