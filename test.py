@@ -21,7 +21,9 @@ def main():
         connection_class = RequestsHttpConnection
     )
 
-    print (json.dumps(es.search(q='sex:M AND last_name:White'), indent=2))
+    while(True):
+        query_input = input("Enter query: ")
+        print (json.dumps(es.search(q='% s'% query_input), indent=2))
 
 if __name__ == "__main__":
     main()
